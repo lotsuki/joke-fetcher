@@ -1,5 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Header from './Header.jsx';
+import Button from './Button.jsx';
+import Joke from './Joke.jsx';
+import ErrorPage from './ErrorPage.jsx';
+import axios from 'axios';
 
 class App extends React.Component {
   constructor(props) {
@@ -7,26 +12,34 @@ class App extends React.Component {
 
     this.state = {
       joke: '',
-      message: {}
+      message: {},
+      error: false
     }
   }
 
 
   componentDidMount() {
-    fetch('https://jokes-api.herokuapp.com/api/joke')
-    .then(res => res.json())
+    axios('https://jokes-api.herokuapp.com/api/joke')
     .then(result => {
-      let joke = result.value.joke;
+      let joke = result.data.value.joke;
       let message = result.value;
       this.setState({ joke, message })
-     })
-    .catch(err => { console.log('Error at GET request: ', err); });
+      })
+    .catch(err => { this.setState({ error: true}) });
   }
 
   render() {
-    console.log(this.state.joke, this.state.message)
+    const { joke, error } = this.state;
+    if (error) {
+      return <ErrorPage />
+    }
     return (
-      <div>HI</div>
+      <div className="container">
+        <Header />
+        <Joke joke={joke}/>
+        <Button />
+      </div>
+
     );
   }
 };
