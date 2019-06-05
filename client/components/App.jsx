@@ -17,7 +17,6 @@ class App extends React.Component {
     }
   }
 
-
   componentDidMount() {
     axios('https://jokes-api.herokuapp.com/api/joke')
     .then(result => {
