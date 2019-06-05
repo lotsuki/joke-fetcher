@@ -19,7 +19,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/../public`));
 
-app.get('/random', (req, res) => {
+app.get('/onload', (req, res) => {
+  let joke = req.body;
+    res.send(joke);
+});
+
+app.get('/new', (req, res) => {
+  console.log('hi')
   let joke = req.body;
     res.send(joke);
 });
