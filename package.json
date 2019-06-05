@@ -1,0 +1,26 @@
+{
+  "name": "joke-fetcher",
+  "version": "1.0.0",
+  "description": "Fetches and displays jokes",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lotsuki/joke-fetcher.git"
+  },
+  "keywords": [],
+  "author": "Lindsey Otsuki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lotsuki/joke-fetcher/issues"
+  },
+  "homepage": "https://github.com/lotsuki/joke-fetcher#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}
