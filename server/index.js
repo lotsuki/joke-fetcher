@@ -18,29 +18,23 @@ app.use((req, res, next) => {
     res.set("Access-Control-Max-Age", "30008");
   }
     next();
-
 });
 
-// app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/../public`));
 
+
 app.get('/joke', (req, res) => {
   let joke = req.body;
-    res.send(joke);
+  res.send(joke);
 });
 
-// app.get('/button', (req, res) => {
-//   let joke = req.body;
-//     res.send(joke);
-// });
+app.get("/:id", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
 
-// app.get('/joke', (req, res) => {
-//   let joke = req.body;
-//     res.send(joke);
-// });
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`)

@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Page from './Page.jsx';
-import ErrorPage from './ErrorPage.jsx';
 import axios from 'axios';
-import utils from '../lib/utils.js';
 
 
 class App extends React.Component {
@@ -19,18 +17,34 @@ class App extends React.Component {
 
   componentDidMount() {
     const signal = this.abortController.signal;
+    const path = window.location.pathname;
 
-    fetch('https://jokes-api.herokuapp.com/api/joke',{
-        signal: signal
-      })
-      .then(result => result.json())
-      .then(data => {
-        let joke = data.value.joke.replace(/&quot;/g,'"');
-        this.setState({ joke });
-      })
-      .catch(err => {
-        this.setState({ error: true });
-      });
+    if (path === '/') {
+      fetch('https://jokes-api.herokuapp.com/api/joke', {
+          signal: signal
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data, 'APP')
+          let joke = data.value.joke.replace(/&quot;/g,'"');
+          this.setState({ joke });
+        })
+        .catch(err => { this.setState({ error: true }); });
+    } else {
+      let url = `https://jokes-api.herokuapp.com/api/joke${path}`;
+
+        fetch(url, {
+          signal: signal
+          })
+          .then(res => res.json())
+          .then(data => {
+            console.log(data, 'APP')
+            let joke = data.value.joke.replace(/&quot;/g,'"');
+            this.setState({ joke });
+          })
+          .catch(err => { this.setState({ error: true }); });
+    }
+
   }
 
   componentWillUnMount() {
@@ -39,8 +53,7 @@ class App extends React.Component {
 
   render() {
     const { joke, error } = this.state;
-    if (error) { return <ErrorPage /> }
-    return <Page joke={joke} />
+    return <Page joke={joke} appErr={error}/>
   }
 };
 
