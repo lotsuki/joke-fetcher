@@ -20,15 +20,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/../public`));
 
 app.get('/onload', (req, res) => {
+  console.log(req.body, 'SERVER')
   let joke = req.body;
     res.send(joke);
 });
 
-app.get('/new', (req, res) => {
-  console.log('hi')
-  let joke = req.body;
-    res.send(joke);
-});
+// app.get('/new', (req, res) => {
+//   console.log('hi')
+//   let joke = req.body;
+//     res.send(joke);
+// });
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`)
