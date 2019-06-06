@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header.jsx';
 import Button from './Button.jsx';
+import DefaultJoke from './DefaultJoke.jsx';
 import Joke from './Joke.jsx';
 
 const Page = ({ joke, appErr }) => {
@@ -10,7 +11,12 @@ const Page = ({ joke, appErr }) => {
   return (
     <div className="container">
       <Header />
-      <Joke joke={joke} clicked={clicked} setClicked={setClicked} appErr={appErr}/>
+      {
+        appErr
+        ? (<DefaultJoke />)
+        : ( <Joke joke={joke} clicked={clicked} setClicked={setClicked} />)
+      }
+
       <Button setClicked={setClicked} />
     </div>
   )

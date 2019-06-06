@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Page from './Page.jsx';
+import DefaultJoke from './DefaultJoke.jsx';
 import axios from 'axios';
 
 
@@ -10,41 +11,58 @@ class App extends React.Component {
 
     this.state = {
       joke: '',
-      error: false
+      error: false,
+      calls: 0
     }
     this.abortController = new AbortController();
+    this.signal = this.abortController.signal;
+    this.handleError = this.handleError.bind(this);
+    this.fetchJoke = this.fetchJoke.bind(this);
+  }
+
+  fetchJoke() {
+    fetch('https://jokes-api.herokuapp.com/api/joke',
+      {
+        signal: this.signal
+      })
+      .then(res => res.json())
+      .then(data => {
+        let joke = data.value.joke.replace(/&quot;/g,'"');
+        this.setState({ joke });
+      })
+      .catch(err => {
+        this.handleError();
+      });
+      console.log(this.state.calls)
+  }
+
+  handleError() {
+    this.setState((prevState) => ({calls: prevState.calls + 1}))
+    if (this.state.calls >= 3) {
+      this.setState({error: true})
+    } else {
+      this.fetchJoke();
+    }
   }
 
   componentDidMount() {
-    const signal = this.abortController.signal;
     const path = window.location.pathname;
 
     if (path === '/') {
-      fetch('https://jokes-api.herokuapp.com/api/joke', {
-          signal: signal
-        })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data, 'APP')
-          let joke = data.value.joke.replace(/&quot;/g,'"');
-          this.setState({ joke });
-        })
-        .catch(err => { this.setState({ error: true }); });
+      this.fetchJoke();
     } else {
       const cachedId = localStorage.getItem('id');
       const cachedJoke = localStorage.getItem('joke');
 
       if (path === cachedId) {
-        console.log(cachedJoke, 'cache')
         this.setState({joke: cachedJoke})
       } else {
         let url = `https://jokes-api.herokuapp.com/api/joke${path}`;
         fetch(url, {
-          signal: signal
+          signal: this.signal
           })
           .then(res => res.json())
           .then(data => {
-            console.log('noooooo')
             let joke = data.value.joke.replace(/&quot;/g,'"');
             localStorage.setItem('id', path);
             localStorage.setItem('joke', joke);
@@ -55,13 +73,15 @@ class App extends React.Component {
     }
   }
 
+
+
   componentWillUnMount() {
     this.abortController.abort()
   }
 
   render() {
     const { joke, error } = this.state;
-    return <Page joke={joke} appErr={error}/>
+    return  <Page joke={joke} appErr={error}/>
   }
 };
 
