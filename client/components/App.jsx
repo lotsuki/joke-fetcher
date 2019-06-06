@@ -4,7 +4,6 @@ import Header from './Header.jsx';
 import Button from './Button.jsx';
 import Joke from './Joke.jsx';
 import ErrorPage from './ErrorPage.jsx';
-import FetchJoke from './FetchJoke.jsx';
 import utils from '../lib/utils.js';
 import axios from 'axios';
 import _ from 'lodash';
@@ -21,21 +20,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-     let data = utils.fetchJoke()
+     let data = utils.fetchJoke();
      data
        .then(result => {
-        let joke = _.replace(result, '&quot;', '"')
+        let joke = result.replace(/&quot;/g,'"');
         this.setState({ joke });
       })
        .catch(err => { this.setState({ error: true }); });
-
-    // axios('https://jokes-api.herokuapp.com/api/joke')
-    //   .then(result => {
-    //     let joke = result.data.value.joke;
-    //     let message = result.value;
-    //     this.setState({ joke, message });
-    //     })
-    //   .catch(err => { this.setState({ error: true}) });
   }
 
   displayNewJoke(joke, error) {

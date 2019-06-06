@@ -4,18 +4,13 @@ import utils from '../lib/utils.js';
 
 const Button = ({ displayNewJoke }) => {
   const handleClick = () => {
-    let joke = utils.fetchJoke();
-    if (joke) { displayNewJoke(joke); }
-    else { displayNewJoke('', true); }
-
-    // axios('https://jokes-api.herokuapp.com/api/joke')
-    //   .then(result => {
-    //     console.log(result)
-    //     let joke = result.data.value.joke;
-    //     let message = result.value;
-    //     displayNewJoke(joke, message);
-    //   })
-    //   .catch(err => { displayNewJoke('', {}, true) });
+    let data = utils.fetchJoke();
+    data
+       .then(result => {
+        let joke = result.replace(/&quot;/g,'"');
+        displayNewJoke(joke);
+      })
+       .catch(err => { displayNewJoke('', true); });
   };
 
   return (
