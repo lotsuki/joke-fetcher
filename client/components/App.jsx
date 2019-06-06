@@ -1,12 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Header from './Header.jsx';
-import Button from './Button.jsx';
-import Joke from './Joke.jsx';
+import Page from './Page.jsx';
 import ErrorPage from './ErrorPage.jsx';
-import utils from '../lib/utils.js';
 import axios from 'axios';
-import _ from 'lodash';
+import utils from '../lib/utils.js';
+
 
 class App extends React.Component {
   constructor(props) {
@@ -16,39 +14,33 @@ class App extends React.Component {
       joke: '',
       error: false
     }
-    this.displayNewJoke = this.displayNewJoke.bind(this);
+    this.abortController = new AbortController();
   }
 
   componentDidMount() {
-     let data = utils.fetchJoke();
-     data
-       .then(result => {
-        let joke = result.replace(/&quot;/g,'"');
+    const signal = this.abortController.signal;
+
+    fetch('https://jokes-api.herokuapp.com/api/joke',{
+        signal: signal
+      })
+      .then(result => result.json())
+      .then(data => {
+        let joke = data.value.joke.replace(/&quot;/g,'"');
         this.setState({ joke });
       })
-       .catch(err => { this.setState({ error: true }); });
+      .catch(err => {
+        this.setState({ error: true });
+      });
   }
 
-  displayNewJoke(joke, error) {
-    if (error) {
-      this.setState({ error: true});
-    }
-    this.setState({ joke });
+  componentWillUnMount() {
+    this.abortController.abort()
   }
 
   render() {
     const { joke, error } = this.state;
-    if (error) {
-      return <ErrorPage />
-    }
-    return (
-      <div className="container">
-        <Header />
-        <Joke joke={joke}/>
-        <Button displayNewJoke={this.displayNewJoke}/>
-      </div>
-
-    );
+    if (error) { return <ErrorPage /> }
+    return <Page joke={joke} />
   }
 };
 

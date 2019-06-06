@@ -1,32 +1,43 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  next();
+  res.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+
+  if (res.method === 'OPTIONS') {
+    res.set("Access-Control-Max-Age", "30008");
+  }
+    next();
+
 });
+
+// app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/../public`));
 
-app.get('/onload', (req, res) => {
-  console.log(req.body, 'SERVER')
+app.get('/joke', (req, res) => {
   let joke = req.body;
     res.send(joke);
 });
 
-// app.get('/new', (req, res) => {
-//   console.log('hi')
+// app.get('/button', (req, res) => {
+//   let joke = req.body;
+//     res.send(joke);
+// });
+
+// app.get('/joke', (req, res) => {
 //   let joke = req.body;
 //     res.send(joke);
 // });

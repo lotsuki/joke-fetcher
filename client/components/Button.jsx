@@ -1,17 +1,8 @@
 import React from 'react';
-import axios from 'axios';
-import utils from '../lib/utils.js';
+import PropTypes from 'prop-types';
 
-const Button = ({ displayNewJoke }) => {
-  const handleClick = () => {
-    let data = utils.fetchJoke();
-    data
-       .then(result => {
-        let joke = result.replace(/&quot;/g,'"');
-        displayNewJoke(joke);
-      })
-       .catch(err => { displayNewJoke('', true); });
-  };
+const Button = ({ setClicked }) => {
+  const handleClick = () => { setClicked(true); };
 
   return (
     <div className="new-joke-button-container">
@@ -21,3 +12,7 @@ const Button = ({ displayNewJoke }) => {
 }
 
 export default Button;
+
+Button.propTypes = {
+  setClicked: PropTypes.func
+};
