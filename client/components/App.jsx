@@ -31,20 +31,28 @@ class App extends React.Component {
         })
         .catch(err => { this.setState({ error: true }); });
     } else {
-      let url = `https://jokes-api.herokuapp.com/api/joke${path}`;
+      const cachedId = localStorage.getItem('id');
+      const cachedJoke = localStorage.getItem('joke');
 
+      if (path === cachedId) {
+        console.log(cachedJoke, 'cache')
+        this.setState({joke: cachedJoke})
+      } else {
+        let url = `https://jokes-api.herokuapp.com/api/joke${path}`;
         fetch(url, {
           signal: signal
           })
           .then(res => res.json())
           .then(data => {
-            console.log(data, 'APP')
+            console.log('noooooo')
             let joke = data.value.joke.replace(/&quot;/g,'"');
+            localStorage.setItem('id', path);
+            localStorage.setItem('joke', joke);
             this.setState({ joke });
           })
           .catch(err => { this.setState({ error: true }); });
+      }
     }
-
   }
 
   componentWillUnMount() {
