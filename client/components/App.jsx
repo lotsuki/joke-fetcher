@@ -20,6 +20,7 @@ class App extends React.Component {
     this.fetchJoke = this.fetchJoke.bind(this);
   }
 
+  //GET request for random joke
   fetchJoke() {
     fetch('https://jokes-api.herokuapp.com/api/joke',
       {
@@ -35,6 +36,7 @@ class App extends React.Component {
       });
   }
 
+  //Handles error on random joke GET request
   handleError() {
     this.setState((prevState) => ({calls: prevState.calls + 1}))
     if (this.state.calls >= 3) {
@@ -47,15 +49,19 @@ class App extends React.Component {
   componentDidMount() {
     const path = window.location.pathname;
 
+    //If no ID is given
     if (path === '/') {
       this.fetchJoke();
     } else {
+      //Cached joke and ID param from previous request
       const cachedId = localStorage.getItem('id');
       const cachedJoke = localStorage.getItem('joke');
 
+      //If user has requested url with same ID
       if (path === cachedId) {
         this.setState({joke: cachedJoke})
       } else {
+        //User requested url with new ID
         let url = `https://jokes-api.herokuapp.com/api/joke${path}`;
         fetch(url, {
           signal: this.signal

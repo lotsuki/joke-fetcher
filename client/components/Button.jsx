@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Button = ({ setClicked }) => {
+  //Button for new random joke
   const handleClick = () => { setClicked(true); };
 
   return (

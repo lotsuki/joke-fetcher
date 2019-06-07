@@ -6,6 +6,7 @@ import axios from 'axios';
 const Interval = ({ handleReq }) => {
   const [ count, setCount ] = useState(0)
 
+  //Count interval
   useEffect(() => {
     const interval = setInterval(() => {
       setCount(count + 1)
@@ -15,6 +16,7 @@ const Interval = ({ handleReq }) => {
      }
   });
 
+  //Fetch new joke
   if (count === 10) {
     handleReq()
     setCount(0)
@@ -24,7 +26,6 @@ const Interval = ({ handleReq }) => {
 };
 
 export default Interval;
-
 
 
 Interval.propTypes = {

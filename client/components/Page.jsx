@@ -12,6 +12,7 @@ const Page = ({ joke, appErr }) => {
     <div className="container">
       <Header />
       {
+        //If App comp had GET request error
         appErr
         ? (<DefaultJoke />)
         : ( <Joke joke={joke} clicked={clicked} setClicked={setClicked} />)

@@ -11,6 +11,7 @@ const Joke = ({ joke, clicked, setClicked }) => {
   const controller = new AbortController();
   const signal = controller.signal;
 
+  //Fetch random joke on set interval or after request error
   const request = async () => {
     const res = await fetch('https://jokes-api.herokuapp.com/api/joke', {
       signal: signal
@@ -18,14 +19,17 @@ const Joke = ({ joke, clicked, setClicked }) => {
     if (res.status === 429) { setError(true); }
     const json = await res.json();
     const j = json.value.joke.replace(/&quot;/g,'"');
-    setNewJoke(j);
+    console.log(j)
+    await setNewJoke(j);
 
-    if (clicked) { setClicked(false); }
-    if (numOfCalls) { setNumOfCalls(0) }
+    if (clicked) { await setClicked(false); }
+    if (numOfCalls) { await setNumOfCalls(0) }
     controller.abort();
   };
 
   const handleReq = () => request().catch(err => handleError());
+
+  //Will send 3 GET requests before displaying default joke
   const handleError = () => {
     if (numOfCalls >= 3) {
       setError(true);
@@ -35,11 +39,13 @@ const Joke = ({ joke, clicked, setClicked }) => {
     }
   };
 
+  //Fetch joke if button is clicked
   if (clicked) {
     handleReq();
     controller.abort();
   }
 
+  //Handles which joke to display on page
   const displayJoke = () => {
     if (error) {
       setError(false);
