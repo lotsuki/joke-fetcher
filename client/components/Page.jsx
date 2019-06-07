@@ -4,6 +4,7 @@ import Header from './Header.jsx';
 import Button from './Button.jsx';
 import DefaultJoke from './DefaultJoke.jsx';
 import Joke from './Joke.jsx';
+import Image from './Image.jsx';
 
 const Page = ({ joke, appErr }) => {
   const [ clicked, setClicked ] = useState(false);
@@ -17,16 +18,8 @@ const Page = ({ joke, appErr }) => {
         ? (<DefaultJoke />)
         : ( <Joke joke={joke} clicked={clicked} setClicked={setClicked} />)
       }
-
-      <Button setClicked={setClicked} />
-      <div className="img-container">
-        <div className="img-wrapper slide">
-          <div className="big-bubble"><span className="text">Hahaha...</span></div>
-          <div className="med-bubble"></div>
-          <div className="small-bubble"></div>
-          <img className="laughing-img" src="https://img.icons8.com/ios/64/000000/lol.png" crossOrigin="anonymous" alt="" />
-        </div>
-      </div>
+      <Button setClicked={setClicked} clicked={clicked}/>
+      <Image />
     </div>
   );
 };

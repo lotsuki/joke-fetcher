@@ -1,23 +1,21 @@
-import React, {useState, useEffect, useCallback } from 'react';
+import React, {useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Joke from './Joke.jsx';
-import axios from 'axios';
 
 const Interval = ({ handleReq }) => {
-  const [ count, setCount ] = useState(0)
+  const [ count, setCount ] = useState(0);
 
   //Count interval
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCount(count + 1)
-  //   }, 1000)
-  //     return function cleanup() {
-  //     clearInterval(interval)
-  //    }
-  // });
+  useEffect(() => {
+    let interval = setInterval(() => {
+      setCount(prevCount => prevCount + 1)
+    }, 1000);
+      return function cleanup() {
+      clearInterval(interval)
+     }
+  }, []);
 
   //Fetch new joke
-  if (count === 10) {
+  if (count === 15) {
     handleReq()
     setCount(0)
   }

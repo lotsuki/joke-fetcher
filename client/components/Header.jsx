@@ -7,7 +7,7 @@ const Header = () => {
       <i className="fas fa-utensil-spoon"></i>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Header;

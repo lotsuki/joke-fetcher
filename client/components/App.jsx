@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Page from './Page.jsx';
 import DefaultJoke from './DefaultJoke.jsx';
-import axios from 'axios';
 
 
 class App extends React.Component {
