@@ -8,8 +8,8 @@ const Button = ({ setClicked }) => {
     <div className="new-joke-button-container">
       <button className="new-joke-button" type="button" onClick={handleClick}>New Joke</button>
     </div>
-  )
-}
+  );
+};
 
 export default Button;
 

@@ -19,8 +19,8 @@ const Page = ({ joke, appErr }) => {
 
       <Button setClicked={setClicked} />
     </div>
-  )
-}
+  );
+};
 
 export default Page;
 

@@ -33,7 +33,6 @@ class App extends React.Component {
       .catch(err => {
         this.handleError();
       });
-      console.log(this.state.calls)
   }
 
   handleError() {
@@ -72,8 +71,6 @@ class App extends React.Component {
       }
     }
   }
-
-
 
   componentWillUnMount() {
     this.abortController.abort()
