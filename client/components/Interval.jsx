@@ -7,14 +7,14 @@ const Interval = ({ handleReq }) => {
   const [ count, setCount ] = useState(0)
 
   //Count interval
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCount(count + 1)
-    }, 1000)
-      return function cleanup() {
-      clearInterval(interval)
-     }
-  });
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCount(count + 1)
+  //   }, 1000)
+  //     return function cleanup() {
+  //     clearInterval(interval)
+  //    }
+  // });
 
   //Fetch new joke
   if (count === 10) {

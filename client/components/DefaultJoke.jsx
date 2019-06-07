@@ -8,7 +8,11 @@ const DefaultJoke = ({ setError }) => {
 
   let n = Math.floor(Math.random() * 8);
 
-  return ( <div className="default-joke">{errorMessages[n]}</div> );
+  return (
+    <div className="joke-container">
+      <div className="default-joke">{errorMessages[n]}</div>
+    </div>
+  );
 };
 
 export default DefaultJoke;
