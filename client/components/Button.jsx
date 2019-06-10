@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ setClicked }) => {
+const Button = ({ fetchJoke }) => {
   //Button for new random joke
-  const handleClick = () => { setClicked(true); };
+  const handleClick = () => { fetchJoke() };
 
   return (
     <div className="new-joke-button-container">
@@ -15,5 +15,5 @@ const Button = ({ setClicked }) => {
 export default Button;
 
 Button.propTypes = {
-  setClicked: PropTypes.func
+  fetchJoke: PropTypes.func
 };

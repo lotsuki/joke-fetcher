@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Page from './Page.jsx';
-import DefaultJoke from './DefaultJoke.jsx';
+import Header from './Header.jsx';
+import Button from './Button.jsx';
+import Joke from './Joke.jsx';
+import utils from '../lib/utils.js';
 
 
 class App extends React.Component {
@@ -10,16 +12,15 @@ class App extends React.Component {
 
     this.state = {
       joke: '',
-      error: false,
       calls: 0
     }
+
     this.abortController = new AbortController();
     this.signal = this.abortController.signal;
     this.handleError = this.handleError.bind(this);
     this.fetchJoke = this.fetchJoke.bind(this);
   }
 
-  //GET request for random joke
   fetchJoke() {
     fetch('https://jokes-api.herokuapp.com/api/joke',
       {
@@ -35,11 +36,10 @@ class App extends React.Component {
       });
   }
 
-  //Handles error on random joke GET request
   handleError() {
     this.setState((prevState) => ({calls: prevState.calls + 1}))
     if (this.state.calls >= 3) {
-      this.setState({error: true})
+      this.setState({joke: utils.defaultJoke()})
     } else {
       this.fetchJoke();
     }
@@ -75,16 +75,29 @@ class App extends React.Component {
           .catch(err => { this.handleError(); });
       }
     }
+    this.timer = setInterval(() => this.fetchJoke(), 15000);
   }
 
   componentWillUnMount() {
-    this.abortController.abort()
+    this.abortController.abort();
+    clearInterval(this.timer);
+    this.timer = null;
   }
 
   render() {
     const { joke, error } = this.state;
-    return  <Page joke={joke} appErr={error}/>
+    const { fetchJoke } = this;
+
+
+    return (
+      <div className="conatiner">
+        <Header />
+        <Joke joke={joke}/>
+        <Button fetchJoke={fetchJoke}/>
+      </div>
+    );
   }
 };
+
 
 export default App;
