@@ -72,7 +72,7 @@ class App extends React.Component {
             localStorage.setItem('joke', joke);
             this.setState({ joke });
           })
-          .catch(err => { this.setState({ error: true }); });
+          .catch(err => { this.handleError(); });
       }
     }
   }
