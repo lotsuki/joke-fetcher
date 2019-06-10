@@ -12,6 +12,7 @@ class App extends React.Component {
 
     this.state = {
       joke: '',
+      status: null,
       calls: 0
     }
 
@@ -19,33 +20,52 @@ class App extends React.Component {
     this.signal = this.abortController.signal;
     this.handleError = this.handleError.bind(this);
     this.fetchJoke = this.fetchJoke.bind(this);
+    this.handleInterval = this.handleInterval.bind(this);
   }
 
-  fetchJoke() {
-    fetch('https://jokes-api.herokuapp.com/api/joke',
+  async fetchJoke (path) {
+    clearInterval(this.timer);
+    let res;
+    try {
+      res = await fetch('https://jokes-api.herokuapp.com/api/joke',
       {
         signal: this.signal
-      })
-      .then(res => res.json())
-      .then(data => {
-        let joke = data.value.joke.replace(/&quot;/g,'"');
-        this.setState({ joke });
-      })
-      .catch(err => {
-        this.handleError();
       });
-  }
-
-  handleError() {
-    this.setState((prevState) => ({calls: prevState.calls + 1}))
-    if (this.state.calls >= 3) {
-      this.setState({joke: utils.defaultJoke()})
-    } else {
-      this.fetchJoke();
+      const json = await res.json()
+      const data = json.value.joke.replace(/&quot;/g,'"');
+      if (path) {
+        localStorage.setItem('id', path);
+        localStorage.setItem('joke', data);
+      }
+      this.setState({joke: data, status: null});
+      this.handleInterval();
+    } catch(err) {
+      if (res.status !== 429) {
+        this.handleError();
+      } else {
+        this.setState({joke: `Woah, easy on the jokes buster. Please wait 10.4 seconds while we scrounge up another one.`, status: 429});
+        setTimeout(this.handleError, 15000);
+      }
     }
   }
 
-  componentDidMount() {
+  handleInterval() {
+    this.timer = setInterval(() => {
+      this.fetchJoke();
+    }, 15000);
+  }
+
+  handleError(path) {
+    this.setState((prevState) => ({calls: prevState.calls + 1}))
+    if (this.state.calls >= 3) {
+      this.setState({joke: utils.defaultJoke(), calls: 0, status: null});
+      this.handleInterval();
+    } else {
+      this.fetchJoke(path);
+    }
+  }
+
+  async componentDidMount() {
     const path = window.location.pathname;
 
     //If no ID is given
@@ -58,24 +78,30 @@ class App extends React.Component {
 
       //If user has requested url with same ID
       if (path === cachedId) {
-        this.setState({joke: cachedJoke})
+        this.setState({joke: cachedJoke});
+        this.handleInterval();
       } else {
         //User requested url with new ID
         let url = `https://jokes-api.herokuapp.com/api/joke${path}`;
-        fetch(url, {
-          signal: this.signal
-          })
-          .then(res => res.json())
-          .then(data => {
-            let joke = data.value.joke.replace(/&quot;/g,'"');
-            localStorage.setItem('id', path);
-            localStorage.setItem('joke', joke);
-            this.setState({ joke });
-          })
-          .catch(err => { this.handleError(); });
+        let res;
+        try {
+          res = await fetch(url, { signal: this.signal });
+          const json = await res.json()
+          const data = json.value.joke.replace(/&quot;/g,'"');
+          localStorage.setItem('id', path);
+          localStorage.setItem('joke', data);
+          this.setState({joke: data, status: null})
+          this.handleInterval();
+        } catch(err) {
+          if (res.status !== 429) {
+            this.handleError(path);
+          } else {
+            this.setState({joke: `Woah, easy on the jokes buster. Please wait 10.4 seconds while we scrounge up another one.`, status: 429});
+            setTimeout(this.handleError, 15000);
+          }
+        }
       }
     }
-    this.timer = setInterval(() => this.fetchJoke(), 15000);
   }
 
   componentWillUnMount() {
@@ -85,15 +111,13 @@ class App extends React.Component {
   }
 
   render() {
-    const { joke, error } = this.state;
+    const { joke, error, status } = this.state;
     const { fetchJoke } = this;
-
-
     return (
       <div className="conatiner">
         <Header />
         <Joke joke={joke}/>
-        <Button fetchJoke={fetchJoke}/>
+        <Button fetchJoke={fetchJoke} status={status}/>
       </div>
     );
   }

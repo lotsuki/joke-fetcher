@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ fetchJoke }) => {
+const Button = ({ fetchJoke, status }) => {
   //Button for new random joke
-  const handleClick = () => { fetchJoke() };
+  const handleClick = (e) => {
+    if (status !== 429) {
+      fetchJoke(e)
+    }
+  };
 
   return (
     <div className="new-joke-button-container">
@@ -15,5 +19,9 @@ const Button = ({ fetchJoke }) => {
 export default Button;
 
 Button.propTypes = {
-  fetchJoke: PropTypes.func
+  fetchJoke: PropTypes.func,
+  status: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.number
+  ])
 };
