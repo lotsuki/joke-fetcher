@@ -24,15 +24,22 @@ class App extends React.Component {
   }
 
   async fetchJoke (path) {
+    //reset interval, even after click event
     clearInterval(this.timer);
+
+    //gives catch block access to res object
     let res;
+
     try {
+      //make API request syncronous with interval in handleInterval func
       res = await fetch('https://jokes-api.herokuapp.com/api/joke',
       {
         signal: this.signal
       });
       const json = await res.json()
       const data = json.value.joke.replace(/&quot;/g,'"');
+
+      //cache joke for API calls with ID param that return error
       if (path) {
         localStorage.setItem('id', path);
         localStorage.setItem('joke', data);
@@ -43,8 +50,9 @@ class App extends React.Component {
       if (res.status !== 429) {
         this.handleError();
       } else {
+        //when status is 429, wait 10 seconds before sending another API request
         this.setState({joke: `Woah, easy on the jokes buster. Please wait 10.4 seconds while we scrounge up another one.`, status: 429});
-        setTimeout(this.handleError, 15000);
+        setTimeout(this.handleError, 10000);
       }
     }
   }
@@ -56,11 +64,14 @@ class App extends React.Component {
   }
 
   handleError(path) {
-    this.setState((prevState) => ({calls: prevState.calls + 1}))
+    this.setState((prevState) => ({calls: prevState.calls + 1}));
+
+    //after 3 GET request attempts, display default joke
     if (this.state.calls >= 3) {
       this.setState({joke: utils.defaultJoke(), calls: 0, status: null});
       this.handleInterval();
     } else {
+      //send GET request
       this.fetchJoke(path);
     }
   }
@@ -104,6 +115,7 @@ class App extends React.Component {
     }
   }
 
+  //clear interval and abort API request on unmount
   componentWillUnMount() {
     this.abortController.abort();
     clearInterval(this.timer);

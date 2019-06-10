@@ -2,11 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Button = ({ fetchJoke, status }) => {
-  //Button for new random joke
   const handleClick = (e) => {
-    if (status !== 429) {
-      fetchJoke(e)
-    }
+    if (status !== 429) { fetchJoke(e); }
   };
 
   return (
